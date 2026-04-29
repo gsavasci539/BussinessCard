@@ -8,12 +8,26 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# Production stage with nginx
+# Production stage with nginx - serve static files only
+# Host nginx handles API proxying
 FROM nginx:alpine
 
 COPY --from=build /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 80
+# Simple nginx config - SPA support only, no proxy
+RUN echo 'server { \
+    listen 3000; \
+    root /usr/share/nginx/html; \
+    index index.html; \
+    location / { \
+        try_files $uri $uri/ /index.html; \
+    } \
+    location /assets/ { \
+        expires 1y; \
+        add_header Cache-Control "public, immutable"; \
+    } \
+}' > /etc/nginx/conf.d/default.conf
+
+EXPOSE 3000
 
 CMD ["nginx", "-g", "daemon off;"]
