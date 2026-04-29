@@ -1,0 +1,22 @@
+# Build cache dosyaları
+.expo/
+.git/
+.gitignore
+README.md
+*.log
+node_modules/
+.env*
+
+# Geçici dosyalar
+*.tmp
+*.temp
+
+# IDE dosyaları
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS dosyaları
+.DS_Store
+Thumbs.db

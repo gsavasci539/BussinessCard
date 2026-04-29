@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: kartvizit-backend
+    ports:
+      - "5002:5002"
+    volumes:
+      - media_data:/app/media
+    environment:
+      - SECRET_KEY=${SECRET_KEY:-dev_secret_key_change_me}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=60
+      - CREATE_SCHEMA=0
+      - CORS_ORIGINS=${CORS_ORIGINS:-}
+      - ODBC_CONN=${ODBC_CONN:-DRIVER={ODBC Driver 17 for SQL Server};SERVER=104.247.167.130,57673;DATABASE=yazil112_meeting;UID=yazil112_test2;PWD=GURkan5391;charset=UTF-8}
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: kartvizit-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  media_data:
